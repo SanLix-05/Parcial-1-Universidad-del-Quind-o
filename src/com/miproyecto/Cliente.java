@@ -1,95 +1,100 @@
 package devplus;
+
 import javax.swing.*;
+import java.util.HashMap;
 
-
-public class Cliente{
+public class Cliente {
     private String name;
-    private String id;
+    private String id; // NIT
     private String phone;
+    private String email;
     private String country;
     private String representanteLegal;
-    private String [] numeroProyecto;
 
-    //Instancia del metodo constructor
-    public Cliente(String name, String id, String phone, String country, String representanteLegal){
+    // Colección estática de todos los clientes registrados (clave = NIT)
+    private static HashMap<String, Cliente> clientesRegistrados = new HashMap<>();
+
+    // Constructor (ahora con 6 parámetros, incluyendo email)
+    public Cliente(String name, String id, String phone, String email, String country, String representanteLegal) {
         this.name = name;
         this.id = id;
         this.phone = phone;
+        this.email = email;
         this.country = country;
         this.representanteLegal = representanteLegal;
     }
 
-    //instancia de get y setters :]
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public String getId() {
-        return id;
-    }
-    public void setId(String id) {
-        this.id = id;
-    }
-    public String getRepresentanteLegal() {
-        return representanteLegal;
-    }
-    public void setRepresentanteLegal(String representanteLegal) {
-        this.representanteLegal = representanteLegal;
-    }
-    public String getPhone() {
-        return phone;
-    }
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-    public String getCountry() {
-        return country;
-    }
-    public void setCountry(String country) {
-        this.country = country;
-    }
+    // Getters y setters
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
-    //Creacion de metodos
-    public static Cliente registroCliente(){
-        int respuesta = 0;
-        String name = "";
-        String id = "";
-        String representanteLegal = "";
-        String phone = "";
-        String country = "";
-        do{
-            JOptionPane.showMessageDialog(null,"Hola querido cliente, agradecemos que haya comprado\n su proyecto con nosotros a continuacion vamos a hacer su registro");
-            name = JOptionPane.showInputDialog("Ingrese su razon social/nombre");
-            id = JOptionPane.showInputDialog("Ingrese su nit");
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getCountry() { return country; }
+    public void setCountry(String country) { this.country = country; }
+
+    public String getRepresentanteLegal() { return representanteLegal; }
+    public void setRepresentanteLegal(String representanteLegal) { this.representanteLegal = representanteLegal; }
+
+    // ----- Métodos -----
+
+    public static Cliente registroCliente() {
+        int respuesta;
+        String name, id, representanteLegal, phone, email, country;
+
+        do {
+            JOptionPane.showMessageDialog(null,
+                    "Hola querido cliente, agradecemos que haya comprado\n" +
+                            "su proyecto con nosotros, a continuación vamos a hacer su registro");
+
+            name = JOptionPane.showInputDialog("Ingrese su razón social/nombre");
+            id = JOptionPane.showInputDialog("Ingrese su NIT");
             representanteLegal = JOptionPane.showInputDialog("Ingrese el nombre del representante legal");
-            phone = JOptionPane.showInputDialog("Ingrese el numero de conctacto de la empresa");
-            country = JOptionPane.showInputDialog("Ingrese su pais");
-            respuesta = JOptionPane.showConfirmDialog(null,"Compruebe que sus datos son correctos:" +
-                    "\nRazon social " + name + "\nNit " + id + "\nRepresentante legal " + representanteLegal +
-                    "\n Numero de contacto: " + phone + "\n Pais: " + country, "Confirme", JOptionPane.YES_NO_OPTION);
-        }while(respuesta == JOptionPane.NO_OPTION);
-        return new Cliente(name, id, phone, country, representanteLegal);
-    }
-    public static String [] crearProyecto(String name, String id, String phone, String country){
-        int respuesta = 0;
-        String nameProyecto = "";
-        String eventoProyecto = "";
-        //Se crea la lista para anadir el nombre y de que va a hacer el proyecto
-        String [] list = new String[2];
-        do{
-            nameProyecto = JOptionPane.showInputDialog("Ingrese el nombre del proyecto:");
-            eventoProyecto = JOptionPane.showInputDialog("Ingrese la actividad a realizar");
-            respuesta = JOptionPane.showConfirmDialog(null,"Compruebe que sus datos son correctos:" +
-                    "\nRazon social " + name + "\nNit " + id + "\nNombre de proyecto" + nameProyecto +
-                    "\nActividad a realizar: " + eventoProyecto + "\n Pais: " + country, "\nConfirme", JOptionPane.YES_NO_OPTION);
+            phone = JOptionPane.showInputDialog("Ingrese el número de contacto de la empresa");
+            email = JOptionPane.showInputDialog("Ingrese el correo electrónico de contacto");
+            country = JOptionPane.showInputDialog("Ingrese su país");
 
-        }while(respuesta == JOptionPane.NO_OPTION);
-        list[0] = nameProyecto;
-        list[1] = eventoProyecto;
-        return list;
+            respuesta = JOptionPane.showConfirmDialog(null,
+                    "Compruebe que sus datos son correctos:" +
+                            "\nRazón social: " + name +
+                            "\nNIT: " + id +
+                            "\nRepresentante legal: " + representanteLegal +
+                            "\nNúmero de contacto: " + phone +
+                            "\nCorreo: " + email +
+                            "\nPaís: " + country,
+                    "Confirme", JOptionPane.YES_NO_OPTION);
+
+        } while (respuesta == JOptionPane.NO_OPTION);
+
+        Cliente nuevoCliente = new Cliente(name, id, phone, email, country, representanteLegal);
+        clientesRegistrados.put(id, nuevoCliente);
+
+        return nuevoCliente;
+    }
+
+    // ----- Métodos estáticos de gestión de la colección -----
+
+    public static HashMap<String, Cliente> getClientesRegistrados() {
+        return clientesRegistrados;
+    }
+
+    public static Cliente buscarPorNit(String nit) {
+        return clientesRegistrados.get(nit);
+    }
+
+    public static Cliente buscarPorTelefono(String phone) {
+        for (Cliente c : clientesRegistrados.values()) {
+            if (c.getPhone() != null && c.getPhone().equals(phone)) {
+                return c;
+            }
+        }
+        return null;
     }
 }
-
