@@ -1,6 +1,9 @@
 package devplus;
 
+import java.util.HashMap;
+
 public class Desarrollador {
+
     private String codigo;
     private String equipoTrabajo;
     private String nivel;
@@ -8,7 +11,10 @@ public class Desarrollador {
     private double tarifaPorDia;
     private String estado;
 
-    public Desarrollador(String codigo, String equipoTrabajo,
+    private HashMap<String, String> proyectosAsignados;
+
+    public Desarrollador(String codigo,
+                         String equipoTrabajo,
                          String nivel,
                          int maxProyectosSimultaneos,
                          double tarifaPorDia,
@@ -20,7 +26,10 @@ public class Desarrollador {
         this.maxProyectosSimultaneos = maxProyectosSimultaneos;
         this.tarifaPorDia = tarifaPorDia;
         this.estado = estado;
+
+        proyectosAsignados = new HashMap<>();
     }
+
     public String getCodigo() {
         return codigo;
     }
@@ -66,5 +75,54 @@ public class Desarrollador {
     }
 
     public void setEstado(String estado) {
-        this.estado = estado;}
+        this.estado = estado;
+    }
+
+    public boolean puedeAsignarse() {
+        return proyectosAsignados.size() < maxProyectosSimultaneos;
+    }
+
+    public boolean asignarProyecto(String codigoProyecto) {
+
+        if (puedeAsignarse()) {
+
+            proyectosAsignados.put(codigoProyecto, "Asignado");
+
+            if (proyectosAsignados.size() == maxProyectosSimultaneos) {
+                estado = "Ocupado";
+            } else {
+                estado = "Asignado";
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public void finalizarProyecto(String codigoProyecto) {
+
+        proyectosAsignados.remove(codigoProyecto);
+
+        if (proyectosAsignados.isEmpty()) {
+            estado = "Disponible";
+        } else {
+            estado = "Asignado";
+        }
+    }
+    public boolean estaDisponible() {
+        return estado.equalsIgnoreCase("Disponible");
+    }
+
+    public void cambiarEstado(String nuevoEstado) {
+        estado = nuevoEstado;
+    }
+
+    public double calcularCosto(int dias) {
+        return tarifaPorDia * dias;
+    }
+
+
+
 }
+
