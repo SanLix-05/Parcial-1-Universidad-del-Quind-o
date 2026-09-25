@@ -58,6 +58,13 @@ public String getCodigo (){
     public void setDisponibilidad(String disponibilidad) {
         this.disponibilidad = disponibilidad;
     }
+    public boolean estaDisponible() {
+        return disponibilidad.equalsIgnoreCase("Disponible");
+    }
+
+    public void cambiarDisponibilidad(String nuevaDisponibilidad) {
+        disponibilidad = nuevaDisponibilidad;
+    }
 
 
 }
